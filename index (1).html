@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova — Services Informatiques</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple-deep:   #0d0a14;
+      --purple-dark:   #130d20;
+      --purple-mid:    #2a1a4a;
+      --purple-accent: #9b5de5;
+      --purple-glow:   #c77dff;
+      --purple-light:  #e0aaff;
+      --white:         #f4f0ff;
+      --muted:         #9e8fb5;
+      --card-bg:       rgba(42, 26, 74, 0.45);
+      --border:        rgba(155, 93, 229, 0.2);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--purple-deep);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .5;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 6vw;
+      backdrop-filter: blur(16px);
+      background: rgba(13, 10, 20, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.5rem;
+      color: var(--purple-glow);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--white); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a {
+      color: var(--muted); text-decoration: none;
+      font-size: .9rem; font-weight: 500;
+      transition: color .2s;
+    }
+    nav ul a:hover { color: var(--purple-light); }
+    .nav-cta {
+      background: var(--purple-accent);
+      color: #fff !important;
+      padding: .5rem 1.2rem;
+      border-radius: 100px;
+      font-weight: 500 !important;
+      transition: background .2s, transform .2s !important;
+    }
+    .nav-cta:hover { background: var(--purple-glow) !important; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 6vw 6rem;
+      position: relative;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(155,93,229,.25) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -55%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(155,93,229,.15);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .35rem 1rem;
+      font-size: .8rem; color: var(--purple-light);
+      margin-bottom: 2rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--purple-glow);
+      box-shadow: 0 0 8px var(--purple-glow);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      animation: fadeUp .7s .1s ease both;
+    }
+    h1 .accent { color: var(--purple-glow); }
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted); max-width: 520px;
+      line-height: 1.7;
+      animation: fadeUp .7s .2s ease both;
+    }
+    .hero-btns {
+      margin-top: 2.5rem;
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp .7s .3s ease both;
+    }
+    .btn-primary {
+      background: var(--purple-accent);
+      color: #fff; border: none;
+      padding: .85rem 2rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 500; cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 30px rgba(155,93,229,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(155,93,229,.6); }
+    .btn-outline {
+      background: transparent;
+      color: var(--purple-light);
+      border: 1px solid var(--border);
+      padding: .85rem 2rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 500; cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s, transform .2s;
+    }
+    .btn-outline:hover { border-color: var(--purple-accent); color: var(--white); transform: translateY(-2px); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      color: var(--muted); font-size: .75rem;
+      animation: fadeUp 1s .6s ease both;
+    }
+    .hero-scroll .arrow { animation: bounce 1.5s infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 6rem 6vw; position: relative; z-index: 1; }
+    .section-label {
+      font-size: .75rem; font-weight: 600; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--purple-accent);
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    h2 .accent { color: var(--purple-glow); }
+
+    /* ── SERVICES ── */
+    #services { background: var(--purple-dark); }
+    .services-header { text-align: center; margin-bottom: 3.5rem; }
+    .services-header p { color: var(--muted); margin-top: 1rem; max-width: 480px; margin-inline: auto; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+      backdrop-filter: blur(8px);
+    }
+    .service-card:hover {
+      border-color: var(--purple-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 40px rgba(155,93,229,.2);
+    }
+    .service-icon {
+      font-size: 2rem; margin-bottom: 1rem;
+      display: block;
+    }
+    .service-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: .5rem;
+    }
+    .service-card p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+    .service-price {
+      display: inline-block;
+      margin-top: 1.2rem;
+      background: rgba(155,93,229,.15);
+      border: 1px solid var(--border);
+      color: var(--purple-light);
+      border-radius: 100px;
+      padding: .3rem .9rem;
+      font-size: .85rem; font-weight: 600;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+    #about-section { padding: 6rem 6vw; }
+    .about-visual {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-ring {
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .about-ring::after {
+      content: '';
+      position: absolute; inset: -20px;
+      border-radius: 50%;
+      border: 1px dashed rgba(155,93,229,.3);
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .about-emoji { font-size: 5rem; }
+    .about-text p { color: var(--muted); line-height: 1.8; margin-top: 1.2rem; }
+    .about-text p + p { margin-top: .8rem; }
+    .about-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      margin-top: 1.5rem; margin-right: .5rem;
+      background: rgba(155,93,229,.1);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .3rem .9rem;
+      font-size: .8rem; color: var(--purple-light);
+    }
+
+    /* ── MODES ── */
+    #modes { background: var(--purple-dark); }
+    .modes-header { text-align: center; margin-bottom: 3rem; }
+    .modes-header p { color: var(--muted); margin-top: 1rem; }
+    .modes-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; max-width: 700px; margin: 0 auto;
+    }
+    .mode-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      text-align: center;
+      transition: border-color .3s, transform .3s;
+    }
+    .mode-card:hover { border-color: var(--purple-accent); transform: translateY(-4px); }
+    .mode-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .mode-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: .5rem; }
+    .mode-card p { color: var(--muted); font-size: .9rem; }
+
+    /* ── MUSIC NOTE ── */
+    .music-banner {
+      max-width: 700px; margin: 3rem auto 0;
+      background: linear-gradient(135deg, rgba(155,93,229,.15), rgba(199,125,255,.08));
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem 2rem;
+      display: flex; align-items: center; gap: 1.2rem;
+      backdrop-filter: blur(8px);
+    }
+    .music-banner .music-icon { font-size: 2rem; flex-shrink: 0; }
+    .music-banner p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+    .music-banner strong { color: var(--purple-light); }
+
+    /* ── CONTACT ── */
+    #contact { text-align: center; }
+    #contact h2 { margin-bottom: .5rem; }
+    #contact .sub { color: var(--muted); margin-bottom: 2.5rem; }
+    .contact-card {
+      display: inline-flex; flex-direction: column; align-items: center;
+      gap: 1.5rem;
+    }
+    .contact-btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--purple-accent);
+      color: #fff; text-decoration: none;
+      padding: 1rem 2.5rem; border-radius: 100px;
+      font-size: 1.05rem; font-weight: 500;
+      box-shadow: 0 0 40px rgba(155,93,229,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(155,93,229,.6); }
+    .contact-note { color: var(--muted); font-size: .85rem; }
+    .social-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .social-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1px solid var(--border);
+      color: var(--purple-light); text-decoration: none;
+      padding: .7rem 1.6rem; border-radius: 100px;
+      font-size: .95rem; font-weight: 500;
+      transition: border-color .2s, background .2s, transform .2s;
+    }
+    .social-btn:hover { border-color: var(--purple-accent); background: rgba(155,93,229,.1); transform: translateY(-2px); }
+    .social-btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 6vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--purple-glow); }
+    footer p { color: var(--muted); font-size: .8rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      #about { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+      .about-visual { display: none; }
+      .modes-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      max-width: 1100px; margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Nova<span>.</span></a>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about-section">À propos</a></li>
+    <li><a href="#modes">Comment ça marche</a></li>
+    <li><a href="#contact" class="nav-cta">Me contacter</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Disponible maintenant · Réponse rapide
+  </div>
+  <h1>Ton ordi<br>enfin <span class="accent">réparé.</span></h1>
+  <p class="hero-sub">
+    Services informatiques rapides, abordables et fiables. À distance ou en personne — je m'occupe de tout.
+  </p>
+  <div class="hero-btns">
+    <a href="#contact" class="btn-primary">Me contacter 💬</a>
+    <a href="#services" class="btn-outline">Voir les services</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Défiler</span>
+    <span class="arrow">↓</span>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <p class="section-label">Ce que j'offre</p>
+    <h2>Mes <span class="accent">services</span></h2>
+    <p>Des solutions claires à des prix accessibles. Et si t'as besoin d'autre chose, contacte-moi!</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">🪟</span>
+      <h3>Installation / Réinstallation Windows</h3>
+      <p>Remise à neuf complète de ton système Windows. Propre, rapide et fonctionnel.</p>
+      <span class="service-price">10$</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🛡️</span>
+      <h3>Nettoyage de virus & Optimisation</h3>
+      <p>Suppression des logiciels malveillants et optimisation de la performance.</p>
+      <span class="service-price">15$</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">⚡</span>
+      <h3>Accélération d'ordinateur lent</h3>
+      <p>Ton PC rame? Je l'analyse et le booste pour qu'il retrouve sa vitesse.</p>
+      <span class="service-price">10$</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🔄</span>
+      <h3>Réinitialisation complète</h3>
+      <p>Remise à zéro totale de ton appareil comme s'il était neuf.</p>
+      <span class="service-price">10$</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🗂️</span>
+      <h3>Libération d'espace disque</h3>
+      <p>Nettoyage en profondeur du système pour libérer de l'espace de stockage.</p>
+      <span class="service-price">5$</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🔍</span>
+      <h3>Diagnostic de problèmes</h3>
+      <p>Bugs, lenteurs, erreurs mystérieuses… je trouve et j'explique le problème.</p>
+      <span class="service-price">5$</span>
+    </div>
+    <div class="service-card" style="border-style: dashed;">
+      <span class="service-icon">✨</span>
+      <h3>Autre chose?</h3>
+      <p>Ce n'est pas une liste exhaustive. Contacte-moi et je te dirai si c'est dans mes possibilités.</p>
+      <span class="service-price">Demande gratuite</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about-section">
+  <div id="about">
+    <div class="about-visual">
+      <div class="about-ring">
+        <span class="about-emoji">💻</span>
+      </div>
+    </div>
+    <div class="about-text">
+      <p class="section-label">À propos</p>
+      <h2>Un jeune <span class="accent">passionné</span> à ton service</h2>
+      <p>Salut! Je suis un jeune de 16 ans de la baie passionné d'informatique depuis longtemps. J'ai développé mes compétences en résolvant des problèmes sur mes propres appareils et ceux de mes proches.</p>
+      <p>Mon but : t'offrir un service honnête, rapide et abordable, sans te faire payer une fortune pour des réparations simples.</p>
+      <div>
+        <span class="about-tag">⚡ Réponse rapide</span>
+        <span class="about-tag">💰 Prix abordables</span>
+        <span class="about-tag">🤝 Service honnête</span>
+        <span class="about-tag">🔒 Discret & fiable</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MODES -->
+<section id="modes">
+  <div class="modes-header">
+    <p class="section-label">Comment ça marche</p>
+    <h2>Deux façons de <span class="accent">me rejoindre</span></h2>
+    <p>Choisis ce qui te convient le mieux.</p>
+  </div>
+
+  <div class="modes-grid">
+    <div class="mode-card">
+      <div class="icon">🌐</div>
+      <h3>À distance</h3>
+      <p>Je me connecte à ton appareil à distance pour régler le problème sans te déplacer.</p>
+    </div>
+    <div class="mode-card">
+      <div class="icon">📦</div>
+      <h3>En personne</h3>
+      <p>Tu peux m'apporter ton appareil directement pour une prise en charge physique.</p>
+    </div>
+  </div>
+
+  <div class="music-banner">
+    <div class="music-icon">🎵</div>
+    <p><strong>Un petit bonus :</strong> Tout l'argent gagné via mes services informatiques est réinvesti dans ma deuxième passion — la musique. En me choisissant, tu soutiens aussi un jeune artiste en devenir.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2>Prêt à <span class="accent">commencer?</span></h2>
+  <p class="sub">Envoie-moi un message et je te réponds dans les plus brefs délais.</p>
+
+  <div class="contact-card">
+    <a href="mailto:mathewsoucy@hotmail.com" class="contact-btn">
+      ✉️ &nbsp;Envoyer un message
+    </a>
+    <p class="contact-note">Ou retrouve-moi sur les réseaux sociaux</p>
+    <div class="social-btns">
+      <a href="https://www.facebook.com/mathew.soucy.54/" target="_blank" class="social-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a href="https://www.instagram.com/lene_ice_off/" target="_blank" class="social-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Nova.</span>
+  <p>© 2026 Nova — Services Informatiques. Tous droits réservés.</p>
+</footer>
+
+</body>
+</html>
